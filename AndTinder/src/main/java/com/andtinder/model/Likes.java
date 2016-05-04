@@ -23,7 +23,7 @@ public class Likes {
 
 	        public final int value;
 
-	        private Like(int value) {
+	        Like(int value) {
 	            this.value = value;
 	        }
 

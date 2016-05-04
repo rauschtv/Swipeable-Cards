@@ -20,6 +20,7 @@ package com.andtinder.demo;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -30,62 +31,46 @@ import com.andtinder.view.SimpleCardStackAdapter;
 
 public class MainActivity extends Activity {
 
-    /**
-     * This variable is the container that will host our cards
-     */
-	private CardContainer mCardContainer;
-	
-	@Override
+    private CardContainer mCardContainer;
+    private CardModel mCardModel;
+
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.mainlayout);
 
-		mCardContainer = (CardContainer) findViewById(R.id.layoutview);
-
+		/*
+      This variable is the container that will host our cards
+     */
+        mCardContainer = (CardContainer) findViewById(R.id.layoutview);
 		Resources r = getResources();
-
 		SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(this);
 
-		adapter.add(new CardModel("Title1", "Description goes here", r.getDrawable(R.drawable.picture1)));
-		adapter.add(new CardModel("Title2", "Description goes here", r.getDrawable(R.drawable.picture2)));
-		adapter.add(new CardModel("Title3", "Description goes here", r.getDrawable(R.drawable.picture3)));
-		adapter.add(new CardModel("Title4", "Description goes here", r.getDrawable(R.drawable.picture1)));
-		adapter.add(new CardModel("Title5", "Description goes here", r.getDrawable(R.drawable.picture2)));
-		adapter.add(new CardModel("Title6", "Description goes here", r.getDrawable(R.drawable.picture3)));
-		adapter.add(new CardModel("Title1", "Description goes here", r.getDrawable(R.drawable.picture1)));
-		adapter.add(new CardModel("Title2", "Description goes here", r.getDrawable(R.drawable.picture2)));
-		adapter.add(new CardModel("Title3", "Description goes here", r.getDrawable(R.drawable.picture3)));
-		adapter.add(new CardModel("Title4", "Description goes here", r.getDrawable(R.drawable.picture1)));
-		adapter.add(new CardModel("Title5", "Description goes here", r.getDrawable(R.drawable.picture2)));
-		adapter.add(new CardModel("Title6", "Description goes here", r.getDrawable(R.drawable.picture3)));
-		adapter.add(new CardModel("Title1", "Description goes here", r.getDrawable(R.drawable.picture1)));
-		adapter.add(new CardModel("Title2", "Description goes here", r.getDrawable(R.drawable.picture2)));
-		adapter.add(new CardModel("Title3", "Description goes here", r.getDrawable(R.drawable.picture3)));
-		adapter.add(new CardModel("Title4", "Description goes here", r.getDrawable(R.drawable.picture1)));
-		adapter.add(new CardModel("Title5", "Description goes here", r.getDrawable(R.drawable.picture2)));
-		adapter.add(new CardModel("Title6", "Description goes here", r.getDrawable(R.drawable.picture3)));
-		adapter.add(new CardModel("Title1", "Description goes here", r.getDrawable(R.drawable.picture1)));
-		adapter.add(new CardModel("Title2", "Description goes here", r.getDrawable(R.drawable.picture2)));
-		adapter.add(new CardModel("Title3", "Description goes here", r.getDrawable(R.drawable.picture3)));
-		adapter.add(new CardModel("Title4", "Description goes here", r.getDrawable(R.drawable.picture1)));
-		adapter.add(new CardModel("Title5", "Description goes here", r.getDrawable(R.drawable.picture2)));
-		adapter.add(new CardModel("Title6", "Description goes here", r.getDrawable(R.drawable.picture3)));
-		adapter.add(new CardModel("Title1", "Description goes here", r.getDrawable(R.drawable.picture1)));
-		adapter.add(new CardModel("Title2", "Description goes here", r.getDrawable(R.drawable.picture2)));
-		adapter.add(new CardModel("Title3", "Description goes here", r.getDrawable(R.drawable.picture3)));
-		adapter.add(new CardModel("Title4", "Description goes here", r.getDrawable(R.drawable.picture1)));
-		adapter.add(new CardModel("Title5", "Description goes here", r.getDrawable(R.drawable.picture2)));
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			adapter.add(new CardModel("Title1", "Description goes here", r.getDrawable(R.drawable.picture1, null)));
+			adapter.add(new CardModel("Title2", "Description goes here", r.getDrawable(R.drawable.picture2, null)));
+			adapter.add(new CardModel("Title3", "Description goes here", r.getDrawable(R.drawable.picture3, null)));
+			adapter.add(new CardModel("Title4", "Description goes here", r.getDrawable(R.drawable.picture1, null)));
+            mCardModel = new CardModel("Title1", "Description goes here", r.getDrawable(R.drawable.picture1, null));
+		}
 
-        CardModel cardModel = new CardModel("Title1", "Description goes here", r.getDrawable(R.drawable.picture1));
-        cardModel.setOnClickListener(new CardModel.OnClickListener() {
+        mCardModel.setOnCardstackEmptyListener(new CardModel.OnCardstackEmptyListener() {
+
+            @Override
+            public void OnEmpty(){
+                Log.i("Swipeable Cards", "This was the last card. Do something!");
+            }
+        });
+
+        mCardModel.setOnClickListener(new CardModel.OnClickListener() {
            @Override
            public void OnClickListener() {
                Log.i("Swipeable Cards","I am pressing the card");
            }
         });
 
-        cardModel.setOnCardDismissedListener(new CardModel.OnCardDismissedListener() {
+        mCardModel.setOnCardDismissedListener(new CardModel.OnCardDismissedListener() {
             @Override
             public void onLike() {
                 Log.i("Swipeable Cards","I like the card");
@@ -97,7 +82,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        adapter.add(cardModel);
+        adapter.add(mCardModel);
 
 		mCardContainer.setAdapter(adapter);
 	}

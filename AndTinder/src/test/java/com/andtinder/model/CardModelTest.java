@@ -51,6 +51,7 @@ public class CardModelTest {
                 cardModel.getOnCardDismissedListener());
         assertNull("mOnClickListener property value must be null for zero argument constructor",
                 cardModel.getOnClickListener() );
+        assertNull("mOnCardstackEmptyListener property value must be null for zero argument constructor", cardModel.getmOnCardstackEmptyListener());
     }
 
     @Test

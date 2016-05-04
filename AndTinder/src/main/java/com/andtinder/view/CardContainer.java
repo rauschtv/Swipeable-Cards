@@ -10,6 +10,7 @@ import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -250,7 +251,9 @@ public class CardContainer extends AdapterView<ListAdapter> {
         if (mGestureDetector.onTouchEvent(event)) {
             return true;
         }
-        Log.d("Touch Event", MotionEvent.actionToString(event.getActionMasked()) + " ");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Log.d("Touch Event", MotionEvent.actionToString(event.getActionMasked()) + " ");
+        }
         final int pointerIndex;
         final float x, y;
         final float dx, dy;
@@ -490,6 +493,13 @@ public class CardContainer extends AdapterView<ListAdapter> {
                     cardModel.getOnCardDismissedListener().onDislike();
                 } else {
                     cardModel.getOnCardDismissedListener().onLike();
+                }
+            }
+
+            // Check if cardstack is empty and trigger event.
+            if(cardModel.getmOnCardstackEmptyListener() != null){
+                if(getChildCount() -1 == 0){
+                    cardModel.getmOnCardstackEmptyListener().OnEmpty();
                 }
             }
 
