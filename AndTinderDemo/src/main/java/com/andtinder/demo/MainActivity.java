@@ -56,26 +56,28 @@ public class MainActivity extends Activity {
         mCardContainer.setOnCardstackEmptyListener(new CardContainer.OnCardstackEmptyListener() {
 
             @Override
-            public void OnEmpty(CardModel cm){
+            public void OnEmpty(Object obj){
+                CardModel cm = (CardModel) obj;
                 Log.i("Swipeable Cards", "This was the last card. Do something!");
+                Log.i("Swipeable Cards", "Last card's title: " + cm.getTitle());
             }
         });
 
         mCardContainer.setOnClickListener(new CardContainer.OnClickListener() {
            @Override
-           public void OnClick(CardModel cm) {
+           public void OnClick(Object cm) {
                Log.i("Swipeable Cards","I am pressing the card");
            }
         });
 
         mCardContainer.setOnCardDismissedListener(new CardContainer.OnCardDismissedListener() {
             @Override
-            public void onLike(CardModel cm) {
+            public void onLike(Object cm) {
                 Log.i("Swipeable Cards","I like the card");
             }
 
             @Override
-            public void onDislike(CardModel cm) {
+            public void onDislike(Object cm) {
                 Log.i("Swipeable Cards","I dislike the card");
             }
         });

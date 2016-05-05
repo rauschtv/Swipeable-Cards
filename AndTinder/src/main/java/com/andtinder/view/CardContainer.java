@@ -27,7 +27,6 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 
 import com.andtinder.R;
-import com.andtinder.model.CardModel;
 import com.andtinder.model.Orientations.Orientation;
 
 import java.util.Random;
@@ -77,17 +76,17 @@ public class CardContainer extends AdapterView<ListAdapter> {
     private OnCardstackEmptyListener mOnCardstackEmptyListener = null;
 
     public interface OnCardDismissedListener {
-        void onLike(CardModel card);
+        void onLike(Object obj);
 
-        void onDislike(CardModel card);
+        void onDislike(Object obj);
     }
 
     public interface OnClickListener {
-        void OnClick(CardModel card);
+        void OnClick(Object obj);
     }
 
-    public interface OnCardstackEmptyListener{
-        void OnEmpty(CardModel lastCard);
+    public interface OnCardstackEmptyListener {
+        void OnEmpty(Object obj);
     }
 
     public CardContainer(Context context) {
@@ -158,7 +157,7 @@ public class CardContainer extends AdapterView<ListAdapter> {
         while (mNextAdapterPosition < mListAdapter.getCount() && getChildCount() < mMaxVisible) {
             View view = mListAdapter.getView(mNextAdapterPosition, null, this);
             view.setLayerType(LAYER_TYPE_SOFTWARE, null);
-            if(mOrientation == Orientation.Disordered) {
+            if (mOrientation == Orientation.Disordered) {
                 view.setRotation(getDisorderedRotation());
             }
             addViewInLayout(view, 0, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT,
@@ -183,15 +182,14 @@ public class CardContainer extends AdapterView<ListAdapter> {
     public void setOrientation(Orientation orientation) {
         if (orientation == null)
             throw new NullPointerException("Orientation may not be null");
-        if(mOrientation != orientation) {
+        if (mOrientation != orientation) {
             this.mOrientation = orientation;
-            if(orientation == Orientation.Disordered) {
+            if (orientation == Orientation.Disordered) {
                 for (int i = 0; i < getChildCount(); i++) {
                     View child = getChildAt(i);
                     child.setRotation(getDisorderedRotation());
                 }
-            }
-            else {
+            } else {
                 for (int i = 0; i < getChildCount(); i++) {
                     View child = getChildAt(i);
                     child.setRotation(0);
@@ -308,7 +306,7 @@ public class CardContainer extends AdapterView<ListAdapter> {
                     mDragging = true;
                 }
 
-                if(!mDragging) {
+                if (!mDragging) {
                     return true;
                 }
 
@@ -369,10 +367,8 @@ public class CardContainer extends AdapterView<ListAdapter> {
             case MotionEvent.ACTION_DOWN:
                 mTopCard.getHitRect(childRect);
 
-                CardModel cardModel = (CardModel)getAdapter().getItem(getChildCount()-1);
-
                 if (this.getOnClickListener() != null) {
-                    this.getOnClickListener().OnClick(cardModel);
+                    this.getOnClickListener().OnClick(getAdapter().getItem(getChildCount() - 1));
                 }
                 pointerIndex = event.getActionIndex();
                 x = event.getX(pointerIndex);
@@ -498,23 +494,23 @@ public class CardContainer extends AdapterView<ListAdapter> {
             }, duration + 200);
 
             mTopCard = getChildAt(getChildCount() - 2);
-            CardModel cardModel = (CardModel) getAdapter().getItem(getAdapter().getCount() - getChildCount());
+            Object obj = getAdapter().getItem(getAdapter().getCount() - getChildCount());
 
             if (mTopCard != null)
                 mTopCard.setLayerType(LAYER_TYPE_HARDWARE, null);
 
             if (this.getOnCardDismissedListener() != null) {
                 if (targetX < 0) {
-                    this.getOnCardDismissedListener().onDislike(cardModel);
+                    this.getOnCardDismissedListener().onDislike(obj);
                 } else {
-                    this.getOnCardDismissedListener().onLike(cardModel);
+                    this.getOnCardDismissedListener().onLike(obj);
                 }
             }
 
             // Check if cardstack is empty and trigger event.
-            if(this.getmOnCardstackEmptyListener() != null){
-                if(getChildCount() -1 == 0){
-                    this.getmOnCardstackEmptyListener().OnEmpty(cardModel);
+            if (this.getmOnCardstackEmptyListener() != null) {
+                if (getChildCount() - 1 == 0) {
+                    this.getmOnCardstackEmptyListener().OnEmpty(obj);
                 }
             }
 
@@ -540,7 +536,6 @@ public class CardContainer extends AdapterView<ListAdapter> {
         }
     }
 
-
     //Moved Listener to this place
     public void setOnCardDismissedListener(OnCardDismissedListener listener) {
         this.mOnCardDismissedListener = listener;
@@ -558,11 +553,11 @@ public class CardContainer extends AdapterView<ListAdapter> {
         return this.mOnClickListener;
     }
 
-    public void setOnCardstackEmptyListener(OnCardstackEmptyListener listener){
+    public void setOnCardstackEmptyListener(OnCardstackEmptyListener listener) {
         this.mOnCardstackEmptyListener = listener;
     }
 
-    public OnCardstackEmptyListener getmOnCardstackEmptyListener(){
+    public OnCardstackEmptyListener getmOnCardstackEmptyListener() {
         return this.mOnCardstackEmptyListener;
     }
 
