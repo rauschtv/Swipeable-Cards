@@ -47,11 +47,6 @@ public class CardModelTest {
                 cardModel.getCardLikeImageDrawable() );
         assertNull("cardDislikeImageDrawable property value must be null for zero argument constructor",
                 cardModel.getCardDislikeImageDrawable() );
-        assertNull("mOnCardDismissedListener property value must be null for zero argument constructor",
-                cardModel.getOnCardDismissedListener());
-        assertNull("mOnClickListener property value must be null for zero argument constructor",
-                cardModel.getOnClickListener() );
-        assertNull("mOnCardstackEmptyListener property value must be null for zero argument constructor", cardModel.getmOnCardstackEmptyListener());
     }
 
     @Test
@@ -143,27 +138,5 @@ public class CardModelTest {
                 cardModel.getCardDislikeImageDrawable() );
     }
 
-    @Test
-    public void testSetPropertyListeners(){
-        //given
-        CardModel cardModel=new CardModel();
-        CardModel.OnCardDismissedListener onCardDismissedListener=mock(CardModel.OnCardDismissedListener.class);
 
-        //when
-        cardModel.setOnCardDismissedListener(onCardDismissedListener);
-
-        //then
-        assertEquals("mOnCardDismissedListener property instances must be equal", onCardDismissedListener,
-                cardModel.getOnCardDismissedListener() );
-
-        //given
-        CardModel.OnClickListener onClickListener=mock(CardModel.OnClickListener.class);
-
-        //when
-        cardModel.setOnClickListener(onClickListener);
-
-        //then
-        assertEquals("mOnClickListener property instances must be equal", onClickListener,
-                cardModel.getOnClickListener() );
-    }
 }

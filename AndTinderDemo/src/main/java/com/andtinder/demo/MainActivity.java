@@ -32,7 +32,6 @@ import com.andtinder.view.SimpleCardStackAdapter;
 public class MainActivity extends Activity {
 
     private CardContainer mCardContainer;
-    private CardModel mCardModel;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,37 +51,34 @@ public class MainActivity extends Activity {
 			adapter.add(new CardModel("Title2", "Description goes here", r.getDrawable(R.drawable.picture2, null)));
 			adapter.add(new CardModel("Title3", "Description goes here", r.getDrawable(R.drawable.picture3, null)));
 			adapter.add(new CardModel("Title4", "Description goes here", r.getDrawable(R.drawable.picture1, null)));
-            mCardModel = new CardModel("Title1", "Description goes here", r.getDrawable(R.drawable.picture1, null));
 		}
 
-        mCardModel.setOnCardstackEmptyListener(new CardModel.OnCardstackEmptyListener() {
+        mCardContainer.setOnCardstackEmptyListener(new CardContainer.OnCardstackEmptyListener() {
 
             @Override
-            public void OnEmpty(){
+            public void OnEmpty(CardModel cm){
                 Log.i("Swipeable Cards", "This was the last card. Do something!");
             }
         });
 
-        mCardModel.setOnClickListener(new CardModel.OnClickListener() {
+        mCardContainer.setOnClickListener(new CardContainer.OnClickListener() {
            @Override
-           public void OnClickListener() {
+           public void OnClick(CardModel cm) {
                Log.i("Swipeable Cards","I am pressing the card");
            }
         });
 
-        mCardModel.setOnCardDismissedListener(new CardModel.OnCardDismissedListener() {
+        mCardContainer.setOnCardDismissedListener(new CardContainer.OnCardDismissedListener() {
             @Override
-            public void onLike() {
+            public void onLike(CardModel cm) {
                 Log.i("Swipeable Cards","I like the card");
             }
 
             @Override
-            public void onDislike() {
+            public void onDislike(CardModel cm) {
                 Log.i("Swipeable Cards","I dislike the card");
             }
         });
-
-        adapter.add(mCardModel);
 
 		mCardContainer.setAdapter(adapter);
 	}

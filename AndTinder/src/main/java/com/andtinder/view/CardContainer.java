@@ -56,7 +56,6 @@ public class CardContainer extends AdapterView<ListAdapter> {
     private final Rect childRect = new Rect();
     private final Matrix mMatrix = new Matrix();
 
-
     //TODO: determine max dynamically based on device speed
     private int mMaxVisible = 10;
     private GestureDetector mGestureDetector;
@@ -70,8 +69,26 @@ public class CardContainer extends AdapterView<ListAdapter> {
     private int mGravity;
     private int mNextAdapterPosition;
     private boolean mDragging;
-
     private boolean locked = false;
+
+    //Moved Listener to container
+    private OnCardDismissedListener mOnCardDismissedListener = null;
+    private OnClickListener mOnClickListener = null;
+    private OnCardstackEmptyListener mOnCardstackEmptyListener = null;
+
+    public interface OnCardDismissedListener {
+        void onLike(CardModel card);
+
+        void onDislike(CardModel card);
+    }
+
+    public interface OnClickListener {
+        void OnClick(CardModel card);
+    }
+
+    public interface OnCardstackEmptyListener{
+        void OnEmpty(CardModel lastCard);
+    }
 
     public CardContainer(Context context) {
         super(context);
@@ -79,7 +96,6 @@ public class CardContainer extends AdapterView<ListAdapter> {
         setOrientation(Orientation.Disordered);
         setGravity(Gravity.CENTER);
         init();
-
     }
 
     public CardContainer(Context context, AttributeSet attrs) {
@@ -87,7 +103,6 @@ public class CardContainer extends AdapterView<ListAdapter> {
         initFromXml(attrs);
         init();
     }
-
 
     public CardContainer(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -356,8 +371,8 @@ public class CardContainer extends AdapterView<ListAdapter> {
 
                 CardModel cardModel = (CardModel)getAdapter().getItem(getChildCount()-1);
 
-                if (cardModel.getOnClickListener() != null) {
-                    cardModel.getOnClickListener().OnClickListener();
+                if (this.getOnClickListener() != null) {
+                    this.getOnClickListener().OnClick(cardModel);
                 }
                 pointerIndex = event.getActionIndex();
                 x = event.getX(pointerIndex);
@@ -483,23 +498,23 @@ public class CardContainer extends AdapterView<ListAdapter> {
             }, duration + 200);
 
             mTopCard = getChildAt(getChildCount() - 2);
-            CardModel cardModel = (CardModel) getAdapter().getItem(0);
+            CardModel cardModel = (CardModel) getAdapter().getItem(getAdapter().getCount() - getChildCount());
 
             if (mTopCard != null)
                 mTopCard.setLayerType(LAYER_TYPE_HARDWARE, null);
 
-            if (cardModel.getOnCardDismissedListener() != null) {
+            if (this.getOnCardDismissedListener() != null) {
                 if (targetX < 0) {
-                    cardModel.getOnCardDismissedListener().onDislike();
+                    this.getOnCardDismissedListener().onDislike(cardModel);
                 } else {
-                    cardModel.getOnCardDismissedListener().onLike();
+                    this.getOnCardDismissedListener().onLike(cardModel);
                 }
             }
 
             // Check if cardstack is empty and trigger event.
-            if(cardModel.getmOnCardstackEmptyListener() != null){
+            if(this.getmOnCardstackEmptyListener() != null){
                 if(getChildCount() -1 == 0){
-                    cardModel.getmOnCardstackEmptyListener().OnEmpty();
+                    this.getmOnCardstackEmptyListener().OnEmpty(cardModel);
                 }
             }
 
@@ -524,4 +539,31 @@ public class CardContainer extends AdapterView<ListAdapter> {
                     });
         }
     }
+
+
+    //Moved Listener to this place
+    public void setOnCardDismissedListener(OnCardDismissedListener listener) {
+        this.mOnCardDismissedListener = listener;
+    }
+
+    public OnCardDismissedListener getOnCardDismissedListener() {
+        return this.mOnCardDismissedListener;
+    }
+
+    public void setOnClickListener(OnClickListener listener) {
+        this.mOnClickListener = listener;
+    }
+
+    public OnClickListener getOnClickListener() {
+        return this.mOnClickListener;
+    }
+
+    public void setOnCardstackEmptyListener(OnCardstackEmptyListener listener){
+        this.mOnCardstackEmptyListener = listener;
+    }
+
+    public OnCardstackEmptyListener getmOnCardstackEmptyListener(){
+        return this.mOnCardstackEmptyListener;
+    }
+
 }
