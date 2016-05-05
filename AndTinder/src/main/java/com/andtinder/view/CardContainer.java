@@ -367,9 +367,12 @@ public class CardContainer extends AdapterView<ListAdapter> {
             case MotionEvent.ACTION_DOWN:
                 mTopCard.getHitRect(childRect);
 
+                Object obj = getAdapter().getItem(getChildCount() - 1);
+
                 if (this.getOnClickListener() != null) {
-                    this.getOnClickListener().OnClick(getAdapter().getItem(getChildCount() - 1));
+                    this.getOnClickListener().OnClick(obj);
                 }
+
                 pointerIndex = event.getActionIndex();
                 x = event.getX(pointerIndex);
                 y = event.getY(pointerIndex);
