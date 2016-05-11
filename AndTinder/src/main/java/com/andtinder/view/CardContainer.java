@@ -31,7 +31,7 @@ import com.andtinder.model.Orientations.Orientation;
 
 import java.util.Random;
 
-public class CardContainer extends AdapterView<ListAdapter> {
+public class CardContainer<T> extends AdapterView<ListAdapter> {
     public static final int INVALID_POINTER_ID = -1;
     private int mActivePointerId = INVALID_POINTER_ID;
     private static final double DISORDERED_MAX_ROTATION_RADIANS = Math.PI / 64;
@@ -71,22 +71,22 @@ public class CardContainer extends AdapterView<ListAdapter> {
     private boolean locked = false;
 
     //Moved Listener to container
-    private OnCardDismissedListener mOnCardDismissedListener = null;
-    private OnClickListener mOnClickListener = null;
-    private OnCardstackEmptyListener mOnCardstackEmptyListener = null;
+    private OnCardDismissedListener<T> mOnCardDismissedListener = null;
+    private OnClickListener<T> mOnClickListener = null;
+    private OnCardstackEmptyListener<T> mOnCardstackEmptyListener = null;
 
-    public interface OnCardDismissedListener {
-        void onLike(Object obj);
+    public interface OnCardDismissedListener<T> {
+        void onLike(T obj);
 
-        void onDislike(Object obj);
+        void onDislike(T obj);
     }
 
-    public interface OnClickListener {
-        void OnClick(Object obj);
+    public interface OnClickListener<T> {
+        void OnClick(T obj);
     }
 
-    public interface OnCardstackEmptyListener {
-        void OnEmpty(Object obj);
+    public interface OnCardstackEmptyListener<T> {
+        void OnEmpty(T obj);
     }
 
     public CardContainer(Context context) {
@@ -367,10 +367,8 @@ public class CardContainer extends AdapterView<ListAdapter> {
             case MotionEvent.ACTION_DOWN:
                 mTopCard.getHitRect(childRect);
 
-                Object obj = getAdapter().getItem(getChildCount() - 1);
-
                 if (this.getOnClickListener() != null) {
-                    this.getOnClickListener().OnClick(obj);
+                    this.getOnClickListener().OnClick((T) getAdapter().getItem(getChildCount() - 1));
                 }
 
                 pointerIndex = event.getActionIndex();
@@ -504,16 +502,16 @@ public class CardContainer extends AdapterView<ListAdapter> {
 
             if (this.getOnCardDismissedListener() != null) {
                 if (targetX < 0) {
-                    this.getOnCardDismissedListener().onDislike(obj);
+                    this.getOnCardDismissedListener().onDislike((T) obj);
                 } else {
-                    this.getOnCardDismissedListener().onLike(obj);
+                    this.getOnCardDismissedListener().onLike((T) obj);
                 }
             }
 
             // Check if cardstack is empty and trigger event.
             if (this.getmOnCardstackEmptyListener() != null) {
                 if (getChildCount() - 1 == 0) {
-                    this.getmOnCardstackEmptyListener().OnEmpty(obj);
+                    this.getmOnCardstackEmptyListener().OnEmpty((T) obj);
                 }
             }
 
@@ -540,27 +538,27 @@ public class CardContainer extends AdapterView<ListAdapter> {
     }
 
     //Moved Listener to this place
-    public void setOnCardDismissedListener(OnCardDismissedListener listener) {
+    public void setOnCardDismissedListener(OnCardDismissedListener<T> listener) {
         this.mOnCardDismissedListener = listener;
     }
 
-    public OnCardDismissedListener getOnCardDismissedListener() {
+    public OnCardDismissedListener<T> getOnCardDismissedListener() {
         return this.mOnCardDismissedListener;
     }
 
-    public void setOnClickListener(OnClickListener listener) {
+    public void setOnClickListener(OnClickListener<T> listener) {
         this.mOnClickListener = listener;
     }
 
-    public OnClickListener getOnClickListener() {
+    public OnClickListener<T> getOnClickListener() {
         return this.mOnClickListener;
     }
 
-    public void setOnCardstackEmptyListener(OnCardstackEmptyListener listener) {
+    public void setOnCardstackEmptyListener(OnCardstackEmptyListener<T> listener) {
         this.mOnCardstackEmptyListener = listener;
     }
 
-    public OnCardstackEmptyListener getmOnCardstackEmptyListener() {
+    public OnCardstackEmptyListener<T> getmOnCardstackEmptyListener() {
         return this.mOnCardstackEmptyListener;
     }
 

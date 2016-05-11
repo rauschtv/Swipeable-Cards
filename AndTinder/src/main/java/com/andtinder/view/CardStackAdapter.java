@@ -1,6 +1,7 @@
 package com.andtinder.view;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -11,7 +12,7 @@ import com.andtinder.model.CardModel;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public abstract class CardStackAdapter extends BaseCardStackAdapter {
+public abstract class CardStackAdapter<T> extends BaseCardStackAdapter {
 	private final Context mContext;
 
 	/**
@@ -19,18 +20,18 @@ public abstract class CardStackAdapter extends BaseCardStackAdapter {
 	 * performed on the deque should be synchronized on this lock.
 	 */
 	private final Object mLock = new Object();
-	private ArrayList<CardModel> mData;
+	private ArrayList<T> mData;
 
     private boolean mShouldFillCardBackground = false;
 
     public CardStackAdapter(Context context) {
 		mContext = context;
-		mData = new ArrayList<CardModel>();
+		mData = new ArrayList<T>();
 	}
 
-	public CardStackAdapter(Context context, Collection<? extends CardModel> items) {
+	public CardStackAdapter(Context context, Collection<? extends T> items) {
 		mContext = context;
-		mData = new ArrayList<CardModel>(items);
+		mData = new ArrayList<T>(items);
 	}
 
 	@Override
@@ -44,7 +45,11 @@ public abstract class CardStackAdapter extends BaseCardStackAdapter {
 			wrapper.setBackgroundResource(R.drawable.card_bg);
 			if (shouldFillCardBackground()) {
 				innerWrapper = new FrameLayout(mContext);
-				innerWrapper.setBackgroundColor(mContext.getResources().getColor(R.color.card_bg));
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+					innerWrapper.setBackgroundColor(mContext.getResources().getColor(R.color.card_bg,null));
+				}else{
+					innerWrapper.setBackgroundColor(mContext.getResources().getColor(R.color.card_bg));
+				}
 				wrapper.addView(innerWrapper);
 			} else {
 				innerWrapper = wrapper;
@@ -68,7 +73,7 @@ public abstract class CardStackAdapter extends BaseCardStackAdapter {
 		return wrapper;
 	}
 
-	protected abstract View getCardView(int position, CardModel model, View convertView, ViewGroup parent);
+	protected abstract View getCardView(int position,T model, View convertView, ViewGroup parent);
 
     public void setShouldFillCardBackground(boolean isShouldFillCardBackground) {
         this.mShouldFillCardBackground = isShouldFillCardBackground;
@@ -78,15 +83,15 @@ public abstract class CardStackAdapter extends BaseCardStackAdapter {
         return mShouldFillCardBackground;
     }
 
-    public void add(CardModel item) {
+    public void add(T item) {
 		synchronized (mLock) {
 			mData.add(item);
 		}
 		notifyDataSetChanged();
 	}
 
-	public CardModel pop() {
-		CardModel model;
+	public T pop() {
+		T model;
 		synchronized (mLock) {
 			model = mData.remove(mData.size() - 1);
 		}
@@ -99,7 +104,7 @@ public abstract class CardStackAdapter extends BaseCardStackAdapter {
 		return getCardModel(position);
 	}
 
-	public CardModel getCardModel(int position) {
+	public T getCardModel(int position) {
 		synchronized (mLock) {
 			return mData.get(mData.size() - 1 - position);
 		}

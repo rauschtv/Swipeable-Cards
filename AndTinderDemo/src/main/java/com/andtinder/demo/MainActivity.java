@@ -18,7 +18,6 @@
 package com.andtinder.demo;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,7 +30,7 @@ import com.andtinder.view.SimpleCardStackAdapter;
 
 public class MainActivity extends Activity {
 
-    private CardContainer mCardContainer;
+    private CardContainer<MyCardModel> mCardContainer;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,40 +43,39 @@ public class MainActivity extends Activity {
      */
         mCardContainer = (CardContainer) findViewById(R.id.layoutview);
 		Resources r = getResources();
-		SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(this);
+		MySimpleCardStackAdapter adapter = new MySimpleCardStackAdapter(this);
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			adapter.add(new CardModel("Title1", "Description goes here", r.getDrawable(R.drawable.picture1, null)));
-			adapter.add(new CardModel("Title2", "Description goes here", r.getDrawable(R.drawable.picture2, null)));
-			adapter.add(new CardModel("Title3", "Description goes here", r.getDrawable(R.drawable.picture3, null)));
-			adapter.add(new CardModel("Title4", "Description goes here", r.getDrawable(R.drawable.picture1, null)));
+			adapter.add(new MyCardModel("Title1", "Description goes here", "This is MyCardModel", r.getDrawable(R.drawable.picture1, null)));
+			adapter.add(new MyCardModel("Title2", "Description goes here", "This is MyCardModel", r.getDrawable(R.drawable.picture2, null)));
+			adapter.add(new MyCardModel("Title3", "Description goes here", "This is MyCardModel", r.getDrawable(R.drawable.picture3, null)));
+			adapter.add(new MyCardModel("Title4", "Description goes here", "This is MyCardModel", r.getDrawable(R.drawable.picture1, null)));
 		}
 
-        mCardContainer.setOnCardstackEmptyListener(new CardContainer.OnCardstackEmptyListener() {
+        mCardContainer.setOnCardstackEmptyListener(new CardContainer.OnCardstackEmptyListener<MyCardModel>() {
 
             @Override
-            public void OnEmpty(Object obj){
-                CardModel cm = (CardModel) obj;
+            public void OnEmpty(MyCardModel obj){
                 Log.i("Swipeable Cards", "This was the last card. Do something!");
-                Log.i("Swipeable Cards", "Last card's title: " + cm.getTitle());
+                Log.i("Swipeable Cards", "Last card's title: " + obj.getTitle());
             }
         });
 
-        mCardContainer.setOnClickListener(new CardContainer.OnClickListener() {
+        mCardContainer.setOnClickListener(new CardContainer.OnClickListener<MyCardModel>() {
            @Override
-           public void OnClick(Object cm) {
+           public void OnClick(MyCardModel cm) {
                Log.i("Swipeable Cards","I am pressing the card");
            }
         });
 
-        mCardContainer.setOnCardDismissedListener(new CardContainer.OnCardDismissedListener() {
+        mCardContainer.setOnCardDismissedListener(new CardContainer.OnCardDismissedListener<MyCardModel>() {
             @Override
-            public void onLike(Object cm) {
+            public void onLike(MyCardModel cm) {
                 Log.i("Swipeable Cards","I like the card");
             }
 
             @Override
-            public void onDislike(Object cm) {
+            public void onDislike(MyCardModel cm) {
                 Log.i("Swipeable Cards","I dislike the card");
             }
         });

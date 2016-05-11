@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.andtinder.R;
 import com.andtinder.model.CardModel;
 
-public final class SimpleCardStackAdapter extends CardStackAdapter {
+public final class SimpleCardStackAdapter extends CardStackAdapter<CardModel> {
 
 	public SimpleCardStackAdapter(Context mContext) {
 		super(mContext);

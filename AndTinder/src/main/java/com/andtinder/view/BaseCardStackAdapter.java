@@ -7,6 +7,6 @@ import com.andtinder.model.CardModel;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public abstract class BaseCardStackAdapter extends BaseAdapter {
+public abstract class BaseCardStackAdapter<T> extends BaseAdapter {
 
 }
